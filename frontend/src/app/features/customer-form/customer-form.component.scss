@@ -95,6 +95,7 @@ form {
 }
 
 input,
+select,
 textarea {
   width: 100%;
   background: rgba(255, 255, 255, 0.03);
@@ -129,6 +130,21 @@ textarea {
 textarea {
   resize: vertical;
   min-height: 4.5rem;
+}
+
+.phone-field {
+  display: flex;
+  gap: 0.5rem;
+
+  &__code {
+    flex: 0 0 auto;
+    width: auto;
+    max-width: 9.5rem;
+  }
+
+  input {
+    flex: 1 1 auto;
+  }
 }
 
 .field__error {

@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CustomerApiService } from '../../core/services/customer-api.service';
 import { CreateCustomerResponse, ProblemDetails } from '../../core/models/customer.model';
+import { COUNTRIES, countryFlag, type Country } from './countries';
 
 type SubmitState = 'idle' | 'submitting' | 'success' | 'error';
 
@@ -22,11 +23,15 @@ export class CustomerFormComponent {
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly result = signal<CreateCustomerResponse | null>(null);
 
+  protected readonly countries: readonly Country[] = COUNTRIES;
+  protected readonly countryFlag = countryFlag;
+
   protected readonly form = this.fb.nonNullable.group({
     firstName: ['', [Validators.required, Validators.maxLength(100)]],
     lastName: ['', [Validators.required, Validators.maxLength(100)]],
     email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
-    phone: ['', [Validators.pattern(/^\+?[0-9()\-.\s]{7,20}$/)]],
+    dialCode: [COUNTRIES[0].dialCode],
+    phone: ['', [Validators.pattern(/^[0-9()\-.\s]{4,15}$/)]],
     acceptsMarketing: [false],
     note: ['', [Validators.maxLength(1000)]],
   });
@@ -50,7 +55,7 @@ export class CustomerFormComponent {
         firstName: raw.firstName.trim(),
         lastName: raw.lastName.trim(),
         email: raw.email.trim(),
-        phone: raw.phone.trim() || null,
+        phone: raw.phone.trim() ? `${raw.dialCode} ${raw.phone.trim()}` : null,
         acceptsMarketing: raw.acceptsMarketing,
         note: raw.note.trim() || null,
       })
@@ -67,7 +72,7 @@ export class CustomerFormComponent {
   }
 
   protected resetForm(): void {
-    this.form.reset({ acceptsMarketing: false });
+    this.form.reset({ acceptsMarketing: false, dialCode: COUNTRIES[0].dialCode });
     this.state.set('idle');
     this.result.set(null);
     this.errorMessage.set(null);

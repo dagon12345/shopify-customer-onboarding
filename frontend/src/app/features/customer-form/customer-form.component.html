@@ -57,7 +57,26 @@
 
         <div class="field">
           <label for="phone">Phone <span class="field__optional">(optional)</span></label>
-          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" placeholder="+1 (415) 555-0132" />
+          <div class="phone-field">
+            <select
+              class="phone-field__code"
+              formControlName="dialCode"
+              aria-label="Country calling code"
+            >
+              @for (country of countries; track country.iso2) {
+                <option [value]="country.dialCode">
+                  {{ countryFlag(country.iso2) }} {{ country.name }} ({{ country.dialCode }})
+                </option>
+              }
+            </select>
+            <input
+              id="phone"
+              type="tel"
+              formControlName="phone"
+              autocomplete="tel-national"
+              placeholder="415 555 0132"
+            />
+          </div>
           @if (f.phone.invalid && f.phone.touched) {
             <span class="field__error">Enter a valid phone number.</span>
           }
