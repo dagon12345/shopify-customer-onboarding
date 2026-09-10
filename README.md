@@ -171,6 +171,8 @@ npm start
 
 Frontend runs on http://localhost:4200.
 
+> **Note:** Don't run the Docker stack and the local (non-Docker) setup at the same time — both bind ports `4200` and `5000`, so the second one to start either fails or (in Angular's case) silently falls back to a random port. Run `docker compose down` before switching to local dev, and vice versa.
+
 ## Getting a Shopify Admin API token
 
 1. Create a free [Shopify Partner account](https://partners.shopify.com) and a development store.
