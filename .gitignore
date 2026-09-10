@@ -1,0 +1,23 @@
+# Secrets
+.env
+.env.*
+!.env.example
+**/appsettings.Development.json
+**/appsettings.Local.json
+
+# .NET
+backend/**/bin/
+backend/**/obj/
+*.user
+
+# Angular / Node
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+npm-debug.log*
+
+# Editors / OS
+.vs/
+.vscode/
+.idea/
+.DS_Store

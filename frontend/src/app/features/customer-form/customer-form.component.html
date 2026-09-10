@@ -1,0 +1,95 @@
+<div class="page">
+  <div class="backdrop" aria-hidden="true"></div>
+
+  <main class="card">
+    <header class="card__header">
+      <span class="eyebrow">New Customer</span>
+      <h1>Add a customer</h1>
+      <p class="subtitle">Their details are saved and synced straight to your Shopify store.</p>
+    </header>
+
+    @if (state() === 'success' && result(); as res) {
+      <div class="result result--success">
+        <div class="result__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 12.5L9.5 18L20 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>Customer created</h2>
+
+        @if (res.shopifySyncSucceeded) {
+          <p>Synced to Shopify — customer ID <code>{{ res.shopifyCustomerId }}</code>.</p>
+        } @else {
+          <p class="result__warning">
+            Saved locally, but the Shopify sync didn't complete: {{ res.shopifySyncError }}
+          </p>
+        }
+
+        <button type="button" class="btn btn--ghost" (click)="resetForm()">Add another customer</button>
+      </div>
+    } @else {
+      <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input id="firstName" type="text" formControlName="firstName" autocomplete="given-name" placeholder="Jane" />
+            @if (f.firstName.invalid && f.firstName.touched) {
+              <span class="field__error">First name is required.</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input id="lastName" type="text" formControlName="lastName" autocomplete="family-name" placeholder="Doe" />
+            @if (f.lastName.invalid && f.lastName.touched) {
+              <span class="field__error">Last name is required.</span>
+            }
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" autocomplete="email" placeholder="jane.doe@example.com" />
+          @if (f.email.invalid && f.email.touched) {
+            <span class="field__error">Enter a valid email address.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="phone">Phone <span class="field__optional">(optional)</span></label>
+          <input id="phone" type="tel" formControlName="phone" autocomplete="tel" placeholder="+1 (415) 555-0132" />
+          @if (f.phone.invalid && f.phone.touched) {
+            <span class="field__error">Enter a valid phone number.</span>
+          }
+        </div>
+
+        <div class="field">
+          <label for="note">Note <span class="field__optional">(optional)</span></label>
+          <textarea id="note" formControlName="note" rows="3" placeholder="Anything worth remembering about this customer."></textarea>
+          @if (f.note.invalid && f.note.touched) {
+            <span class="field__error">Note cannot exceed 1000 characters.</span>
+          }
+        </div>
+
+        <label class="checkbox">
+          <input type="checkbox" formControlName="acceptsMarketing" />
+          <span class="checkbox__box" aria-hidden="true"></span>
+          <span class="checkbox__label">Customer agrees to receive marketing emails</span>
+        </label>
+
+        @if (state() === 'error' && errorMessage(); as message) {
+          <div class="alert" role="alert">{{ message }}</div>
+        }
+
+        <button type="submit" class="btn btn--primary" [disabled]="state() === 'submitting'">
+          @if (state() === 'submitting') {
+            <span class="spinner" aria-hidden="true"></span>
+            <span>Creating…</span>
+          } @else {
+            <span>Create customer</span>
+          }
+        </button>
+      </form>
+    }
+  </main>
+</div>

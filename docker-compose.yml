@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: customer-onboarding-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-customer_onboarding}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./backend
+      dockerfile: src/Api/Dockerfile
+    container_name: customer-onboarding-api
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__Postgres: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-customer_onboarding};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
+      Shopify__ShopDomain: ${SHOPIFY_SHOP_DOMAIN}
+      Shopify__AccessToken: ${SHOPIFY_ACCESS_TOKEN}
+      Shopify__ApiVersion: ${SHOPIFY_API_VERSION:-2024-10}
+      Cors__AllowedOrigins__0: http://localhost:4200
+    ports:
+      - "5000:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        API_BASE_URL: http://localhost:5000/api
+    container_name: customer-onboarding-frontend
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+
+volumes:
+  postgres_data:
