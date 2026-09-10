@@ -142,21 +142,34 @@ docker compose up --build
 
 ### Locally, without Docker
 
-```bash
-# Postgres only, via Docker
-docker compose up -d postgres
+Run each of these in its own terminal.
 
-# API
+**Terminal 1 — Postgres** (skip if already running):
+
+```bash
+docker compose up -d postgres
+```
+
+**Terminal 2 — API:**
+
+```bash
 cd backend
 dotnet user-secrets set "Shopify:ShopDomain" "your-store.myshopify.com" --project src/Api
 dotnet user-secrets set "Shopify:AccessToken" "shpat_..." --project src/Api
 dotnet run --project src/Api
+```
 
-# Frontend, in another terminal
+API runs on http://localhost:5000, Swagger at `/swagger`.
+
+**Terminal 3 — Frontend:**
+
+```bash
 cd frontend
 npm install
 npm start
 ```
+
+Frontend runs on http://localhost:4200.
 
 ## Getting a Shopify Admin API token
 
