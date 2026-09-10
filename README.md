@@ -5,6 +5,9 @@ A production-style customer entry form: fill it in, and the customer is created 
 ![Customer form](docs/screenshots/form.png)
 ![Success state](docs/screenshots/success.png)
 
+![Shopify Admin showing synced customers](docs/screenshots/shopify-customers.png)
+*Customers submitted through the form, created in the connected Shopify store's Admin → Customers list.*
+
 ## What it does
 
 1. A visitor fills out the customer form (name, email, phone, marketing consent, note).
